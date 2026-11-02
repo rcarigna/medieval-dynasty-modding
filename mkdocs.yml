@@ -1,0 +1,98 @@
+site_name: Medieval Dynasty Modding
+site_description: An unofficial, evidence-based community reference for Medieval Dynasty mod developers.
+site_url: https://rcarigna.github.io/medieval-dynasty-modding/
+repo_url: https://github.com/rcarigna/medieval-dynasty-modding
+repo_name: rcarigna/medieval-dynasty-modding
+edit_uri: edit/main/docs/
+copyright: Original documentation CC BY 4.0 · Original code MIT · Unofficial community project
+strict: true
+hooks:
+  - scripts/evidence.py
+theme:
+  name: material
+  language: en
+  font: false
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+plugins:
+  - search:
+      lang: en
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: ["."]
+      check_paths: true
+      restrict_base_path: true
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    anchors: warn
+    unrecognized_links: warn
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Introduction: getting-started/introduction.md
+      - Tools and prerequisites: getting-started/tools.md
+      - UE4SS fundamentals: getting-started/ue4ss.md
+      - Lua for TypeScript and C# developers: getting-started/lua.md
+      - A first read-only probe: getting-started/first-probe.md
+      - Debugging and rollback: getting-started/debugging.md
+  - Concepts:
+      - Unreal objects and wrappers: concepts/object-model.md
+      - Compatibility and updates: concepts/compatibility.md
+  - API Reference:
+      - Provenance and availability: reference/provenance.md
+      - Lua library: reference/lua.md
+      - UE4SS bindings: reference/ue4ss.md
+      - Unreal interfaces: reference/unreal.md
+      - Medieval Dynasty interfaces: reference/game-interfaces.md
+  - Game Systems:
+      - Animals and wildlife: systems/animals.md
+      - AI and controller boundaries: systems/ai.md
+  - Examples:
+      - Read-only animal inspection: examples/animal-inspection.md
+      - Discovery and property reads: examples/discovery.md
+  - Community:
+      - Contributing: community/contributing.md
+      - Evidence standards: community/evidence.md
+      - Compatibility reports: community/reporting.md
+      - Documentation conventions: community/conventions.md
+      - Licenses and content policy: community/licensing.md

@@ -1,0 +1,49 @@
+name: Compatibility observation
+description: Report a precise failure or reproducible interface observation.
+title: "[Compatibility] "
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach saves, raw personal logs, SDK dumps, binaries, assets, or credentials.
+  - type: input
+    id: game
+    attributes:
+      label: Game store, version and build
+    validations:
+      required: true
+  - type: input
+    id: loader
+    attributes:
+      label: UE4SS exact artifact or source revision
+    validations:
+      required: true
+  - type: input
+    id: context
+    attributes:
+      label: Map, mode and other enabled mods
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Evidence classification
+      options:
+        - Documented
+        - Historical evidence
+        - Inferred
+        - Runtime verified
+    validations:
+      required: true
+  - type: textarea
+    id: operation
+    attributes:
+      label: Operation, steps, expected and observed result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sources and short sanitized evidence excerpt
+      description: Remove personal paths, identifiers and network details. State if no runtime test occurred.
+    validations:
+      required: true
