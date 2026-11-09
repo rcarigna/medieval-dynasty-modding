@@ -1,7 +1,7 @@
 ---
 title: "Read-only animal inspection"
 evidence_status: "Inferred"
-reviewed: "2026-11-02"
+reviewed: "2026-11-09"
 game_build: "25776186"
 ue4ss_version: "3.0.1-1196-g236adf26"
 runtime_verified: false
@@ -20,6 +20,55 @@ Source: [examples/animal-inspection/main.lua](https://github.com/rcarigna/mediev
 ```lua
 --8<-- "examples/animal-inspection/main.lua"
 ```
+
+## Inspection flow and failure boundaries
+
+This flow follows the [published source](https://github.com/rcarigna/medieval-dynasty-modding/blob/main/examples/animal-inspection/main.lua). It describes intended control flow from static source inspection, **not a successful in-game run**. The `AnimalBase` query and resulting animal/controller pair remain unverified on the stated build.
+
+```mermaid
+flowchart TB
+    key["Ctrl+Alt+F9 callback"]
+    gate{"Already pending?"}
+    ignored["Return without logging"]
+    tick{"EngineTickAvailable?"}
+    unavailable["Log unavailable; return"]
+    queue["Set pending = true<br/>pcall: request ExecuteInGameThread"]
+    accepted{"Scheduling call succeeds?"}
+    scheduling["Reset pending; log scheduling error"]
+    callback["Eventual game-thread callback<br/>pcall: inspectAnimals"]
+    stalled["Callback never runs:<br/>pending stays true; no timeout"]
+    world{"Usable local PlayerController,<br/>Pawn and shared world found?"}
+    noWorld["Log no usable player/world"]
+    scan["FindAllOf AnimalBase; inspect at most 32<br/>Filter flags, worlds and Controller/Pawn backlink"]
+    outcome{"Inspection outcome"}
+    pair["Log first matching pair and classes"]
+    inconclusive["Log inconclusive: no matching pair"]
+    readError["Inspection pcall fails:<br/>capture Lua error"]
+    reset["Reset pending after inspection pcall<br/>Then log captured error, if any"]
+
+    key --> gate
+    gate -->|"Yes"| ignored
+    gate -->|"No"| tick
+    tick -->|"No"| unavailable
+    tick -->|"Yes"| queue
+    queue --> accepted
+    accepted -->|"No"| scheduling
+    accepted -->|"Yes; task runs later"| callback
+    accepted -.->|"Yes; task never runs"| stalled
+    callback --> world
+    world -->|"No"| noWorld
+    world -->|"Yes"| scan
+    scan --> outcome
+    outcome -->|"First match"| pair
+    outcome -->|"Exhausted or cap reached"| inconclusive
+    callback -.->|"Lua error anywhere inside inspection"| readError
+    noWorld --> reset
+    pair --> reset
+    inconclusive --> reset
+    readError --> reset
+```
+
+The error branch denotes a failed inspection `pcall`; its message is printed **after** resetting `pending`. A scheduling error has its own protected-call boundary. Neither protects against a native crash, and successful queuing does not guarantee that the callback will execute. The candidate cap limits iteration, not the work done by `FindAllOf`. See [scheduling and lifetime](../concepts/object-model.md#scheduling-is-not-an-await) and [debugging](../getting-started/debugging.md).
 
 ## Read it in execution order
 

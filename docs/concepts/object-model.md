@@ -1,7 +1,7 @@
 ---
 title: "Unreal objects and wrappers"
 evidence_status: "Documented"
-reviewed: "2026-11-02"
+reviewed: "2026-11-09"
 ---
 
 # Unreal and UE4SS mental model
@@ -17,6 +17,20 @@ Read an expression such as `animal:GetPropertyValue("Controller")` in layers:
 | Medieval Dynasty | Game-defined animal classes and the concrete objects loaded in the current session |
 
 The spelling `GetPropertyValue` belongs to the UE4SS binding. The property named `Controller` belongs to Unreal's Pawn class. The particular animal instance belongs to the game. This call crosses all three layers; labeling it simply “a Lua API” hides the useful distinction.
+
+```mermaid
+flowchart TB
+    lua["Lua script<br/>locals, calls, tables, pcall"]
+    binding["UE4SS Lua API and userdata wrappers<br/>FindAllOf, GetPropertyValue, ExecuteInGameThread"]
+    engine["Unreal Engine interfaces<br/>UObject, Pawn, Controller, reflected members"]
+    game["Medieval Dynasty classes and session objects<br/>AnimalBase: historical evidence only"]
+    lua -->|"calls host-provided APIs"| binding
+    binding -->|"discovers, wraps and accesses"| engine
+    game -->|"extends engine types"| engine
+    binding -.->|"queries loaded game objects: unverified here"| game
+```
+
+The arrows show API access and type relationships, not a stack of four independently running services. Lua locals hold wrappers; UE4SS mediates native access. A documented binding does not verify the game object selected through it. See [API provenance](../reference/provenance.md) for symbol-level evidence.
 
 ## Classes, instances and reflection
 
@@ -37,14 +51,25 @@ A **Class Default Object (CDO)** is a template containing class defaults. It is 
 
 The standard framework relationships relevant here are:
 
-```text
-UObject
-└─ AActor
-   ├─ APawn
-   │  └─ ACharacter
-   └─ AController
-      └─ APlayerController
+```mermaid
+classDiagram
+    UObject <|-- UWorld
+    UObject <|-- AActor
+    AActor <|-- APawn
+    APawn <|-- ACharacter
+    AActor <|-- AController
+    AController <|-- APlayerController
+    AController <|-- AAIController
+    ACharacter <|-- AAnimalBase
+    class AAnimalBase {
+        <<HistoricalEvidence>>
+    }
+    AActor --> UWorld : world context via GetWorld
+    APawn --> AController : Controller property, may be null
+    AController --> APawn : Pawn property, may be null
 ```
+
+Hollow triangle arrows mean **inherits from** and point toward the base class. Ordinary arrows mean **references/context**, not inheritance or ownership. The diagram omits unrelated engine classes and intermediate relationships. The engine relationships are documented concepts; the `AAnimalBase` extension is **historical evidence**, not a current-build class verification. The starter example does not require an `AAIController` subtype.
 
 An **Actor** participates in a world. A **Pawn** is an actor that can be controlled/possessed. A **Character** supplies standard character movement/collision facilities; game animals can reuse it. A **Controller** directs a pawn and is itself a separate actor, not the pawn's base class. A PlayerController handles a human player's control. AIController is an engine subtype, but the starter example does not test whether an animal's controller is one. [Epic framework reference](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-quick-reference?application_version=4.27)
 

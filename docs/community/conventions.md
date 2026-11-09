@@ -1,7 +1,7 @@
 ---
 title: "Documentation conventions"
 evidence_status: "Documented"
-reviewed: "2026-11-02"
+reviewed: "2026-11-09"
 ---
 
 # Keep the reference easy to maintain
@@ -33,6 +33,14 @@ bool sameObject = NativeHandleEquals(firstWrapper, secondWrapper);
 Spell out which API belongs to Lua, a UE4SS binding, an engine interface or the game. Separate a class definition from an instance and inheritance from a Pawn/Controller relationship. Userdata is not a plain Lua record.
 
 Examples must be original. Keep published Lua source under `examples/` and include it as text with the snippets extension; the site build must not execute it. Keep personal environment details out of prose, examples, metadata and build output.
+
+## Diagrams
+
+Use fenced `mermaid` blocks for small diagrams beside their textual explanation. The site uses [Material's native Mermaid integration](https://squidfunk.github.io/mkdocs-material/reference/diagrams/), including its theme and navigation support. GitHub can also display these blocks when reviewing Markdown.
+
+Keep labels short, describe arrow meanings, and distinguish inheritance from references, ownership and control flow. Do not use color as the only evidence indicator. Label historical and inferred game-specific relationships directly in the diagram and explain that they are not runtime verified. Update a flow diagram alongside any source change; a successful site build does not prove the depicted game behavior.
+
+Mermaid renders in the reader's browser. Keep surrounding prose useful if rendering is unavailable. Check diagrams in light/dark themes and at narrow widths when browser preview is available; a strict MkDocs build checks the Markdown integration, not browser layout or Mermaid execution.
 
 ## Expanding the site
 

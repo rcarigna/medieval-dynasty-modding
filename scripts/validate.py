@@ -54,8 +54,25 @@ def nav_paths(value):
             yield from nav_paths(item)
 
 
+class SiteConfigLoader(yaml.SafeLoader):
+    """Read the one SuperFences callable tag as inert text; never import it."""
+
+
+SiteConfigLoader.add_constructor(
+    "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format",
+    lambda loader, node: loader.construct_scalar(node),
+)
+
+
+def site_config():
+    return yaml.load(
+        (ROOT / "mkdocs.yml").read_text(encoding="utf-8"),
+        Loader=SiteConfigLoader,
+    )
+
+
 def source_checks() -> int:
-    config = yaml.safe_load((ROOT / "mkdocs.yml").read_text(encoding="utf-8"))
+    config = site_config()
     pages = {str(path.relative_to(DOCS)).replace("\\", "/") for path in DOCS.rglob("*.md")}
     nav = list(nav_paths(config["nav"]))
     if len(nav) != len(set(nav)) or set(nav) != pages:
@@ -166,7 +183,7 @@ def built_checks(page_count: int) -> None:
             elif link.fragment and target in parsed and unquote(link.fragment) not in parsed[target].ids:
                 problem(f"{path.relative_to(site)}: missing generated anchor {raw}")
     scan_text("search/search_index.json", index.read_text(encoding="utf-8"))
-    config = yaml.safe_load((ROOT / "mkdocs.yml").read_text(encoding="utf-8"))
+    config = site_config()
     palettes = {p["scheme"] for p in config["theme"]["palette"]}
     if palettes != {"default", "slate"}:
         problem("Both light and dark palettes must be configured")
