@@ -31,7 +31,7 @@ gh variable set PAGES_PUBLISH_ENABLED --body true --repo rcarigna/medieval-dynas
 gh workflow run pages.yml --ref main --repo rcarigna/medieval-dynasty-modding
 ```
 
-The setting must be enabled through the repository UI first. If permissions, organization policy or environment protection block deployment, stop at that gate; do not widen token scopes or change another repository's visibility implicitly.
+The Pages source must be set to GitHub Actions first, through the repository UI or an authorized Pages API request. If permissions, organization policy or environment protection block deployment, stop at that gate; do not widen token scopes or change another repository's visibility implicitly.
 
 ## Before publication
 

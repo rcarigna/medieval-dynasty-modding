@@ -5,11 +5,11 @@ An **unofficial** community reference for developers learning Lua, UE4SS and Unr
 The project contains original documentation and original read-only examples. It distributes no game assets, game code, generated SDK dumps or tool DLLs.
 
 - Documentation entry point: [docs/index.md](docs/index.md)
-- Intended Pages address: https://rcarigna.github.io/medieval-dynasty-modding/
+- Published documentation: [Medieval Dynasty Modding](https://rcarigna.github.io/medieval-dynasty-modding/)
 - [Contribute](CONTRIBUTING.md) · [Content and licensing policy](docs/community/licensing.md)
 - [Publication setup](PUBLICATION.md)
 
-The intended Pages address is a deployment target, not evidence of a completed deployment.
+GitHub Actions builds and deploys the documentation from main after validation.
 
 ## Build locally
 
